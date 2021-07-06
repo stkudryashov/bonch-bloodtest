@@ -13,7 +13,11 @@
             <div class="card-body">
                 <form method="post" action="/results/">
                     {% csrf_token %}
-                    <input class="form-control mt-3" type="number" name="personal_number" placeholder="СНИЛС" required>
+                    <input type="number" name="personal_number" placeholder="СНИЛС" class="form-control mt-3" required>
+                    <input type="text" name="name" placeholder="Имя" class="form-control mt-3" required>
+                    <input type="text" name="surname" placeholder="Фамилия" class="form-control mt-3" required>
+                    <input type="text" name="patronymic" placeholder="Отчество" class="form-control mt-3">
+                    <input type="date" name="birthday" class="form-control mt-3" required>
                     <button type="submit" name="results" class="btn btn-primary float-end mt-3 w-25">Поиск</button>
                 </form>
             </div>
