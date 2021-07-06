@@ -18,7 +18,18 @@ def results(request):
 
     if 'results' in request.POST:
         personal_number = request.POST.get('personal_number')
-        data = BloodTest.objects.filter(personal_number=personal_number)
+        name = request.POST.get('name').strip()
+        surname = request.POST.get('surname').strip()
+        patronymic = request.POST.get('patronymic').strip()
+        birthday = request.POST.get('birthday')
+
+        data = BloodTest.objects.filter(
+            personal_number=personal_number,
+            name=name,
+            surname=surname,
+            patronymic=patronymic,
+            birthday=birthday
+        )
 
         args['results'] = data
 
