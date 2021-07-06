@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+        <h1 class="my-4">{% block category %}О сервисе{% endblock %}</h1>
+        {% include 'inclusions/messages.html' %}
+        <!-- Blog Post -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-text mt-3" align="justify">bloodtest - свойство, как принято считать, недоступно
+                    диазотирует неорганический бензол. Многочисленные расчеты предсказывают, а эксперименты
+                    подтверждают, что супраструктура методически оправдывает ионообменник. Эриксоновский гипноз,
+                    в рамках ограничений классической механики, одновременно позиционирует социометрический эгоцентризм.
+                    Растворение стабильно.</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-text mt-3">Как использовать сервис:</p>
+                <ul>
+                    <li>Бла бла бла</li>
+                    <li>Бла бла бла</li>
+                    <li>Бла бла бла</li>
+                    <li>Бла бла бла</li>
+                    <li>Бла бла бла</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-text mt-3">Если твой тест не найден - то ты его просто дебил не сдавал</p>
+            </div>
+            <div class="card-footer text-muted">С уважением, администрация проекта</div>
+        </div>
+    </div>
+{% endblock %}

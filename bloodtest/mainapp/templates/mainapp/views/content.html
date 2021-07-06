@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ block.super }} - {{ title }}
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+            <a id="nav" class="anchor"></a>
+            <a id="help"><h1 class="my-4">{% block category %}{{ title|capfirst }}{% endblock %}</h1></a>
+            {% include 'inclusions/messages.html' %}
+            <!-- Blog Post -->
+            {% if letters %}
+                {% for letter in letters %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <p class="card-text mt-3" align="justify">
+                                {{ letter.message }}
+                            </p>
+                        </div>
+                        <div class="row mx-0 card-footer text-muted">
+                            {% if title == 'мои' %}
+                                <div class="col-12">от {{ letter.datetime }}
+                                    <b>&emsp;&emsp;👁 {{ letter.views }}&emsp;💾 {{ letter.saves }}</b>
+                                </div>
+                            {% else %}
+                                <div class="col-10">{{ letter.author.username }} от {{ letter.datetime }}</div>
+                                <form class="col-2 form-check form-switch">
+                                    {% csrf_token %}
+                                    {% if letter in request.user.bookmarks.all %}
+                                        {% if not assignment.status %}
+                                            <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                                   checked
+                                                   onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+
+                                        {% else %}
+                                            <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                                   onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if assignment.status %}
+                                            <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                                   checked
+                                                   onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                        {% else %}
+                                            <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                                   onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                        {% endif %}
+                                    {% endif %}
+                                </form>
+                                <script>function assignmentFinish{{ letter.pk }}(element, assignment) {
+                                    link = "{% url 'change_bookmarks' %}";
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: link,
+                                        data: {
+                                            status: element.checked,
+                                            assignmentID: assignment,
+                                            letter_id: {{ letter.pk }},
+                                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                                        },
+                                        success: function () {
+                                        }
+                                    });
+                                }
+                                </script>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text mt-3" align="justify">
+                            Пока что у вас тут пусто
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?page={{ page_obj.previous_page_number }}#nav">Назад</a></li>
+                        {% endif %}
+                        {% for p in page_obj.paginator.page_range %}
+                            {% if page_obj.number == p %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="?page={{ p }}#nav">{{ p }}</a>
+                                </li>
+                            {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                                <li class="page-item"><a class="page-link" href="?page={{ p }}#nav">{{ p }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}#nav">Вперед</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    {% else %}
+        {% include 'inclusions/permissions.html' %}
+    {% endif %}
+{% endblock %}

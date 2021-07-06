@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if request.user.is_authenticated %}
+        {{ block.super }} - {{ title }}
+    {% else %}
+        {{ block.super }} - нет прав
+    {% endif %}
+{% endblock %}
+
+{% load static %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+            <a id="nav" class="anchor"></a>
+            <a id="help"><h1 class="my-4">{% block category %}{{ title|capfirst }}{% endblock %}</h1></a>
+            {% include 'inclusions/messages.html' %}
+            <!-- Blog Post -->
+            {% if letter %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text mt-3" align="justify">
+                            {{ letter.message }}
+                        </p>
+                    </div>
+                    <div class="row mx-0 card-footer text-muted">
+                        <div class="col-10">{{ letter.author.username }} от {{ letter.datetime }}</div>
+                        <form class="col-2 form-check form-switch">
+                            {% csrf_token %}
+                            {% if letter in request.user.saves.all %}
+                                {% if not assignment.status %}
+                                    <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                           checked
+                                           onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+
+                                {% else %}
+                                    <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                           onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                {% endif %}
+                            {% else %}
+                                {% if assignment.status %}
+                                    <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                           checked
+                                           onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                {% else %}
+                                    <input class="form-check-input saves" type="checkbox" id="CheckChecked"
+                                           onclick='assignmentFinish{{ letter.pk }}(this,"{{ assignment.id }}")'>
+                                {% endif %}
+                            {% endif %}
+                        </form>
+                        <script>function assignmentFinish{{ letter.pk }}(element, assignment) {
+                            link = "{% url 'change_bookmarks' %}";
+                            $.ajax({
+                                type: 'POST',
+                                url: link,
+                                data: {
+                                    status: element.checked,
+                                    assignmentID: assignment,
+                                    letter_id: {{ letter.pk }},
+                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                                },
+                                success: function () {
+                                }
+                            });
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body mt-3">
+                        <div>
+                            <a href="{% url 'send-spam' %}#nav">
+                                <button class="btn btn-outline-warning float-start">Это спам</button></a>
+                            <a href="{% url 'get-letter' 'new-mainapp' %}#nav">
+                                <button class="btn btn-outline-success float-end" onclick="window.location.reload()">Дальше</button></a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text mt-3" align="justify">
+                            Пока что у вас тут пусто
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        {% include 'inclusions/permissions.html' %}
+    {% endif %}
+{% endblock %}
