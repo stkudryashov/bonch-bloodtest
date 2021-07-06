@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ block.super }} - {{ title }}
+    {{ block.super }} - результаты
 {% endblock %}
 
 {% block content %}
@@ -11,16 +11,16 @@
         <a id="help"><h1 class="my-4">{% block category %}{{ title|capfirst }}{% endblock %}</h1></a>
         {% include 'inclusions/messages.html' %}
         <!-- Blog Post -->
-        {% if letters %}
-            {% for letter in letters %}
+        {% if results %}
+            {% for test in results %}
                 <div class="card mb-4">
                     <div class="card-body">
                         <p class="card-text mt-3" align="justify">
-                            {{ letter.message }}
+                            {{ test.id }}
                         </p>
                     </div>
                     <div class="row mx-0 card-footer text-muted">
-                        <div class="col-10">{{ letter.author.username }} от {{ letter.datetime }}</div>
+                        <div class="col-10">{{ test.personal_number }} от {{ test.datetime }}</div>
                     </div>
                 </div>
             {% endfor %}
@@ -38,20 +38,24 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link"
-                                                 href="?page={{ page_obj.previous_page_number }}#nav">Назад</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}#nav">Назад</a>
+                        </li>
                     {% endif %}
                     {% for p in page_obj.paginator.page_range %}
                         {% if page_obj.number == p %}
                             <li class="page-item active" aria-current="page">
-                                <a class="page-link" href="?page={{ p }}#nav">{{ p }}</a>
+                                <a class="page-link" href="?page={{ p }}">{{ p }}</a>
                             </li>
                         {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
-                            <li class="page-item"><a class="page-link" href="?page={{ p }}#nav">{{ p }}</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                            </li>
                         {% endif %}
                     {% endfor %}
                     {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}#nav">Вперед</a>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Вперед</a>
                         </li>
                     {% endif %}
                 </ul>

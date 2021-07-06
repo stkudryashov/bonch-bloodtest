@@ -14,4 +14,12 @@ def search(request):
 
 
 def results(request):
-    return render(request, 'mainapp/views/results.html')
+    args = {}
+
+    if 'results' in request.POST:
+        personal_number = request.POST.get('personal_number')
+        data = BloodTest.objects.filter(personal_number=personal_number)
+
+        args['results'] = data
+
+    return render(request, 'mainapp/views/results.html', args)
