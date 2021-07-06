@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class BloodTest(models.Model):
+    personal_number = models.PositiveIntegerField()
+    datetime = models.DateTimeField(auto_now_add=True)
