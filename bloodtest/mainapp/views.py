@@ -34,3 +34,15 @@ def results(request):
         args['results'] = data
 
     return render(request, 'mainapp/views/results.html', args)
+
+
+def detail(request):
+    args = {}
+
+    if 'detail' in request.POST:
+        test_id = request.POST.get('detail')
+        data = BloodTest.objects.get(id=test_id)
+
+        args['detail'] = data
+
+    return render(request, 'mainapp/views/detail.html', args)

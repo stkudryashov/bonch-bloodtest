@@ -9,7 +9,7 @@ class BloodTest(models.Model):
     patronymic = models.CharField(max_length=32, blank=True, null=True)
 
     birthday = models.DateField()
-    datetime = models.DateTimeField(auto_now_add=True)
+    datetime = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.personal_number}-{self.name}{self.surname}'

@@ -10,17 +10,20 @@
         <a id="nav" class="anchor"></a>
         <a id="help"><h1 class="my-4">{% block category %}{{ title|capfirst }}{% endblock %}</h1></a>
         {% include 'inclusions/messages.html' %}
+
         <!-- Blog Post -->
         {% if results %}
-            {% for test in results %}
+            {% for result in results %}
                 <div class="card mb-4">
+                    <h5 class="card-header">Результаты анализа от {{ result.datetime }}</h5>
                     <div class="card-body">
                         <p class="card-text mt-3" align="justify">
-                            {{ test.id }}
+                            Тут будет заключение по результатам
                         </p>
-                    </div>
-                    <div class="row mx-0 card-footer text-muted">
-                        <div class="col-10">{{ test.personal_number }} от {{ test.datetime }}</div>
+                        <form method="post" action="/detail/">
+                            {% csrf_token %}
+                            <button type="submit" name="detail" value="{{ result.id }}" class="btn btn-primary">Открыть</button>
+                        </form>
                     </div>
                 </div>
             {% endfor %}
@@ -33,6 +36,7 @@
                 </div>
             </div>
         {% endif %}
+
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
             <nav aria-label="Page navigation">
