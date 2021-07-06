@@ -11,10 +11,10 @@
                 Поиск анализов
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" action="/results/">
                     {% csrf_token %}
                     <input class="form-control mt-3" type="number" name="personal_number" placeholder="СНИЛС" required>
-                    <button type="submit" class="btn btn-primary float-end mt-3 w-25">Поиск</button>
+                    <button type="submit" name="results" class="btn btn-primary float-end mt-3 w-25">Поиск</button>
                 </form>
             </div>
         </div>

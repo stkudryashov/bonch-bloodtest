@@ -11,3 +11,7 @@ class IndexHtml(ListView):
 
 def search(request):
     return render(request, 'mainapp/forms/search.html')
+
+
+def results(request):
+    return render(request, 'mainapp/views/results.html')
