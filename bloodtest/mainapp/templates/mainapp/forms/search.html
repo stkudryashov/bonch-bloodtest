@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ block.super }} - поиск{% endblock %}
+
+{% block content %}
+    <div class="col-md-4 py-4">
+    <a id="nav" class="anchor"></a>
+        {% include 'inclusions/messages.html' %}
+        <div class="card">
+            <div class="card-header">
+                Поиск анализов
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input class="form-control mt-3" type="number" name="personal_number" placeholder="СНИЛС" required>
+                    <button type="submit" class="btn btn-primary float-end mt-3 w-25">Поиск</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
