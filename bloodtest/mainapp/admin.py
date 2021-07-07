@@ -10,3 +10,8 @@ class BloodTestAdmin(admin.ModelAdmin):
 
     ordering = ['-datetime']
     search_fields = ['personal_number', 'name', 'surname', 'patronymic']
+
+
+admin.site.register(Analysis)
+
+admin.site.register(Indicator)

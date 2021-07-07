@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 
 from .models import BloodTest
+from .models import Analysis, Indicator
 
 
 class IndexHtml(ListView):
@@ -23,7 +24,7 @@ def results(request):
         patronymic = request.POST.get('patronymic').strip()
         birthday = request.POST.get('birthday')
 
-        data = BloodTest.objects.filter(
+        user = BloodTest.objects.filter(
             personal_number=personal_number,
             name=name,
             surname=surname,
@@ -31,7 +32,15 @@ def results(request):
             birthday=birthday
         )
 
-        args['results'] = data
+        if len(user) == 1:
+            data = Analysis.objects.filter(
+                user = user[0]
+            )
+
+            args['results'] = data
+
+        else:
+            args['results'] = user
 
     return render(request, 'mainapp/views/results.html', args)
 
@@ -41,8 +50,23 @@ def detail(request):
 
     if 'detail' in request.POST:
         test_id = request.POST.get('detail')
-        data = BloodTest.objects.get(id=test_id)
+        analysis = Analysis.objects.get(id=test_id)
 
-        args['detail'] = data
+        analysis_data = Indicator.objects.filter(
+            analysis = analysis
+        )
+
+        labels = []
+        data = []
+        normals = []
+
+        for d in analysis_data:
+            labels.append(d.name)
+            data.append(d.value)
+            normals.append(d.value + 0.5)
+
+
+        args['detail'] = analysis
+        args['data'] = {"labels": labels, "data": data, "normals": normals}
 
     return render(request, 'mainapp/views/detail.html', args)
