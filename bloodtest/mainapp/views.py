@@ -24,6 +24,9 @@ def results(request):
         patronymic = request.POST.get('patronymic').strip()
         birthday = request.POST.get('birthday')
 
+        if len(patronymic) == 0:
+            patronymic = None
+
         user = BloodTest.objects.filter(
             personal_number=personal_number,
             name=name,
