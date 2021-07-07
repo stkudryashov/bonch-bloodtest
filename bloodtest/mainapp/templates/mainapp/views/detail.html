@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% block title %}
     {{ block.super }} - результаты
@@ -6,6 +7,7 @@
 
 {% block content %}
     <!-- Blog Entries Column -->
+
     <div class="col-md-8">
         <a id="nav" class="anchor"></a>
         <a id="help"><h1 class="my-4">{% block category %}{{ title|capfirst }}{% endblock %}</h1></a>
@@ -16,108 +18,67 @@
             <h5 class="card-header">Результаты анализа от {{ detail.datetime }}</h5>
             <div class="card-body">
                 <p class="card-text mt-3" align="justify">
-                    <canvas id="game" width="800" height="600"></canvas>
-                    <script>
-                        var canvas = document.getElementById('game');
-                        var context = canvas.getContext('2d');
-
-                        var grid = 20;
-                        var count = 0;
-
-                        var snake = {
-                            x: 160,
-                            y: 160, dx: grid, dy: 0,
-                            cells: [],
-                            maxCells: 4
-                        };
-
-                        var apple = {
-                          x: 320,
-                          y: 320
-                        };
-
-                        function getRandomInt(min, max) {
-                            return Math.floor(Math.random() * (max - min)) + min;
-                        }
-
-                        function loop() {
-                            requestAnimationFrame(loop);
-                            if (++count < 8) {
-                                return;
-                            }
-
-                            count = 0;
-
-                            context.clearRect(0, 0, canvas.width, canvas.height);
-
-                            snake.x += snake.dx;
-                            snake.y += snake.dy;
-
-                            if (snake.x < 0) {
-                                snake.x = canvas.width - grid;
-                            } else if (snake.x >= canvas.width) {
-                                snake.x = 0;
-                            }
-                            if (snake.y < 0) {
-                                snake.y = canvas.height - grid;
-                            } else if (snake.y >= canvas.height) {
-                                snake.y = 0;
-                            }
-
-                            snake.cells.unshift({x: snake.x, y: snake.y});
-
-                            if (snake.cells.length > snake.maxCells) {
-                                snake.cells.pop();
-                            }
-
-                            context.fillStyle = 'red';
-                            context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
-
-                            context.fillStyle = 'green';
-                            snake.cells.forEach(function (cell, index) {
-                                context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
-                                if (cell.x === apple.x && cell.y === apple.y) {
-                                    snake.maxCells++;
-                                    apple.x = getRandomInt(0, 25) * grid;
-                                    apple.y = getRandomInt(0, 25) * grid;
-                                }
-
-                                for (var i = index + 1; i < snake.cells.length; i++) {
-                                    if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-                                        snake.x = 160;
-                                        snake.y = 160;
-                                        snake.cells = [];
-                                        snake.maxCells = 4;
-                                        snake.dx = grid;
-                                        snake.dy = 0;
-                                        apple.x = getRandomInt(0, 25) * grid;
-                                        apple.y = getRandomInt(0, 25) * grid;
-                                    }
-                                }
-                            });
-                        }
-
-                        document.addEventListener('keydown', function (e) {
-
-                            if (e.which === 37 && snake.dx === 0) {
-                                snake.dx = -grid;
-                                snake.dy = 0;
-                            } else if (e.which === 38 && snake.dy === 0) {
-                                snake.dy = -grid;
-                                snake.dx = 0;
-                            } else if (e.which === 39 && snake.dx === 0) {
-                                snake.dx = grid;
-                                snake.dy = 0;
-                            } else if (e.which === 40 && snake.dy === 0) {
-                                snake.dy = grid;
-                                snake.dx = 0;
-                            }
-                        });
-
-                        requestAnimationFrame(loop);
-                    </script>
+                    <div>
+                        <canvas id="myChart"></canvas>
+                    </div>
                 </p>
             </div>
         </div>
     </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    const DATA_COUNT = 7;
+    const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+
+    const labels = {{data.labels|safe}}
+    const data = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Showcase',
+          data: {{data.data|safe}},
+          borderColor: "rgb(54, 162, 235)",
+          backgroundColor: "rgb(54, 162, 235, 0.7)",
+        },
+        {
+          label: 'Normals',
+          data: {{data.normals|safe}},
+          borderColor: "rgb(255, 159, 64)",
+          backgroundColor: "rgb(255, 159, 64, 0.7)",
+        }
+      ]
+    };
+
+
+
+    const config = {
+      type: 'bar',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Your blood results'
+          }
+        }
+      },
+    };
+
+
+  // === include 'setup' then 'config' above ===
+
+  var myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+
+</script>
 {% endblock %}
