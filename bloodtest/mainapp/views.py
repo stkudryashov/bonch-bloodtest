@@ -64,9 +64,9 @@ def detail(request):
         normals = []
 
         for d in analysis_data:
-            labels.append(d.name)
+            labels.append(d.normalIndicator.name)
             data.append(d.value)
-            normals.append(d.value + 0.5)
+            normals.append(d.normalIndicator.value)
 
 
         args['detail'] = analysis

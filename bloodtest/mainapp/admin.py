@@ -22,9 +22,12 @@ class BloodTestAdmin(admin.ModelAdmin):
 
 @admin.register(Analysis)
 class AnalysisAdmin(admin.ModelAdmin):
-    
+
     inlines = [
         IndicatorsInLine
     ]
 
+
 admin.site.register(Indicator)
+
+admin.site.register(NormalIndicator)
