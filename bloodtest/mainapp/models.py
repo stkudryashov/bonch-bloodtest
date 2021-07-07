@@ -17,14 +17,15 @@ class BloodTest(models.Model):
         return f'{self.personal_number}-{self.name}{self.surname}'
 
     class Meta:
-        verbose_name = 'Blood Test'
-        verbose_name_plural = 'Blood Tests'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
         ordering = ['-datetime']
+
 
 
 class Analysis(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(BloodTest, null=False, on_delete=models.CASCADE, related_name="user")
+    user = models.ForeignKey(BloodTest, null=False, on_delete=models.CASCADE, related_name="BloodTest")
     name = models.CharField(null=False, max_length=64)
     datetime = models.DateField(null=False)
 
