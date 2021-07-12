@@ -10,10 +10,9 @@ class IndicatorsInLine(admin.TabularInline):
 
 @admin.register(BloodTest)
 class BloodTestAdmin(admin.ModelAdmin):
-    list_display = ('personal_number', 'name', 'surname', 'patronymic', 'birthday', 'datetime')
+    list_display = ('personal_number', 'name', 'surname', 'patronymic', 'birthday')
     list_display_links = ('personal_number',)
 
-    ordering = ['-datetime']
     search_fields = ['personal_number', 'name', 'surname', 'patronymic']
 
     inlines = [
@@ -27,7 +26,9 @@ class AnalysisAdmin(admin.ModelAdmin):
         IndicatorsInLine
     ]
 
+    ordering = ['-datetime']
+
 
 admin.site.register(Indicator)
 
-admin.site.register(NormalIndicator)
+admin.site.register(City)

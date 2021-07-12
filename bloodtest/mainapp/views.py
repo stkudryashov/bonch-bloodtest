@@ -37,7 +37,7 @@ def results(request):
 
         if len(user) == 1:
             data = Analysis.objects.filter(
-                user = user[0]
+                user=user[0]
             )
 
             args['results'] = data
@@ -47,7 +47,7 @@ def results(request):
 
     return render(request, 'mainapp/views/results.html', args)
 
-
+from datetime import date
 def detail(request):
     args = {}
 
@@ -56,20 +56,32 @@ def detail(request):
         analysis = Analysis.objects.get(id=test_id)
 
         analysis_data = Indicator.objects.filter(
-            analysis = analysis
+            analysis=analysis
         )
 
         labels = []
         data = []
         normals = []
 
-        for d in analysis_data:
-            labels.append(d.normalIndicator.name)
-            data.append(d.value)
-            normals.append(d.normalIndicator.value)
+        today = date.today()
+        count_sick_ability(analysis_data, city_region=analysis.user.city.region_number, age=today.year-analysis.user.birthday.year, sex=analysis.user.sex)
 
+        # for d in analysis_data:
+        #     labels.append(d.normalIndicator.name)
+        #     data.append(d.value)
+        #     normals.append(d.normalIndicator.value)
 
         args['detail'] = analysis
         args['data'] = {"labels": labels, "data": data, "normals": normals}
 
     return render(request, 'mainapp/views/detail.html', args)
+
+
+import pandas as pd
+
+
+def count_sick_ability(analysis_data, city_region, age, sex):
+    print(city_region, age, sex)
+    df1 = pd.DataFrame(analysis_data.values())
+
+    return df1
