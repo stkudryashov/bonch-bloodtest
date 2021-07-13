@@ -154,7 +154,7 @@ def count_sick_ability(analysis_data, city_region, age, sex):
                 print("normal")
                 status += 1 / d_anal["value"].size
         if status == 0:
-            return round(bed_pop / pop * 100, 4)
+            return 100
         return round((bed_pop / pop) / status * 100, 4)
     except KeyError as e:
         return -1
