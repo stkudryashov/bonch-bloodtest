@@ -100,7 +100,7 @@ def detail(request):
         args['test'] = Normals.objects.using('HealthCare').all()
 
         today = date.today()
-        count_sick_ability(analysis_data, city_region=analysis.user.city.region_number, age=today.year-analysis.user.birthday.year, sex=analysis.user.sex)
+        count_sick_ability(analysis_data, city_region=analysis_user.city.region_number, age=user_age, sex=analysis_user.sex)
 
         # for d in analysis_data:
         #     labels.append(d.normalIndicator.name)
