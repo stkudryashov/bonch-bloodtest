@@ -8,7 +8,7 @@ class AnalysisInLine(admin.TabularInline):
 class IndicatorsInLine(admin.TabularInline):
     model = Indicator
 
-@admin.register(BloodTest)
+@admin.register(User)
 class BloodTestAdmin(admin.ModelAdmin):
     list_display = ('personal_number', 'name', 'surname', 'patronymic', 'birthday')
     list_display_links = ('personal_number',)

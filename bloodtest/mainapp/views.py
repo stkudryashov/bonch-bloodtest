@@ -1,12 +1,16 @@
+import datetime
+
 from django.shortcuts import render
 from django.views.generic import ListView
 
-from .models import BloodTest
-from .models import Analysis, Indicator
+from .models import *
+
+from datetime import date, datetime
+import pandas as pd
 
 
 class IndexHtml(ListView):
-    model = BloodTest
+    model = User
     template_name = 'mainapp/views/index.html'
 
 
@@ -27,7 +31,7 @@ def results(request):
         if len(patronymic) == 0:
             patronymic = None
 
-        user = BloodTest.objects.filter(
+        user = User.objects.filter(
             personal_number=personal_number,
             name=name,
             surname=surname,
@@ -47,7 +51,7 @@ def results(request):
 
     return render(request, 'mainapp/views/results.html', args)
 
-from datetime import date
+
 def detail(request):
     args = {}
 
@@ -55,13 +59,45 @@ def detail(request):
         test_id = request.POST.get('detail')
         analysis = Analysis.objects.get(id=test_id)
 
-        analysis_data = Indicator.objects.filter(
-            analysis=analysis
-        )
+        analysis_data = Indicator.objects.filter(analysis=analysis)
+        analysis_user = analysis.user
+
+        user_age = datetime.now().year - analysis_user.birthday.year
+        if user_age < 30:
+            age = 18
+        elif user_age < 55:
+            age = 45
+        else:
+            age = 65
 
         labels = []
-        data = []
-        normals = []
+        normals_min = []
+        normals_max = []
+        user_data = []
+
+        info_name = []
+        info_text = []
+
+        for indicator in analysis_data:
+            normals_data = Normals.objects.using('HealthCare').get(name=indicator.type, age=age)
+            labels.append(indicator.type)
+            if analysis_user.sex:
+                normals_min.append(normals_data.min_male)
+                normals_max.append(normals_data.max_male)
+            else:
+                normals_min.append(normals_data.min_female)
+                normals_max.append(normals_data.max_female)
+            user_data.append(indicator.value)
+
+            normals_info = Info.objects.using('HealthCare').get(name=indicator.type)
+            info_name.append(normals_info.translate)
+            info_text.append(normals_info.text)
+
+        data = zip(labels, normals_min, normals_max, user_data, info_name, info_text)
+
+        args['data'] = data
+        args['info'] = analysis.additional_info
+        args['test'] = Normals.objects.using('HealthCare').all()
 
         today = date.today()
         count_sick_ability(analysis_data, city_region=analysis.user.city.region_number, age=today.year-analysis.user.birthday.year, sex=analysis.user.sex)
@@ -72,16 +108,11 @@ def detail(request):
         #     normals.append(d.normalIndicator.value)
 
         args['detail'] = analysis
-        args['data'] = {"labels": labels, "data": data, "normals": normals}
 
     return render(request, 'mainapp/views/detail.html', args)
 
 
-import pandas as pd
-
-
 def count_sick_ability(analysis_data, city_region, age, sex):
-    print(city_region, age, sex)
     df1 = pd.DataFrame(analysis_data.values())
 
     return df1

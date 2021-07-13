@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% block title %}
     {{ block.super }} - результаты
@@ -19,66 +18,52 @@
             <div class="card-body">
                 <p class="card-text mt-3" align="justify">
                     <div>
-                        <canvas id="myChart"></canvas>
+                        {% for label, normal_min, normal_max, user_data, info_name, info_text in data %}
+                            <canvas id="myChart{{ label }}"></canvas>
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                            <script>
+                                const data{{ label }} = {
+                                    labels: ['Минимальная норма', 'Твой результат', 'Максимальная норма'],
+                                    datasets: [
+                                        {
+                                            label: '{{ info_name }}',
+                                            data: [{{ normal_min|safe }}, {{ user_data|safe }}, {{ normal_max|safe }}],
+                                            borderColor: ['rgb(252,145,3)', 'rgb(0,94,255)', 'rgb(255,0,0)'],
+                                            backgroundColor: ['rgba(255,149,0,0.6)', 'rgba(0,32,255,0.48)', 'rgba(255,45,45,0.56)'],
+                                            borderWidth: 3
+                                        }
+                                    ]
+                                };
+
+                                const config{{ label }} = {
+                                    type: 'bar',
+                                    data: data{{ label }},
+                                    options: {
+                                        responsive: true,
+                                        plugins: {
+                                            legend: {
+                                                position: 'top',
+                                            },
+                                            title: {
+                                                display: false,
+                                                text: '{{ info_name }}'
+                                            }
+                                        }
+                                    },
+                                };
+
+                                var myChart{{ label }} = new Chart(
+                                    document.getElementById('myChart{{ label }}'),
+                                    config{{ label }}
+                                );
+                            </script>
+                            <p align="justify">{{ info_text }}</p>
+                            <br>
+                        {% endfor %}
+                        <p>{{ info }}</p>
                     </div>
                 </p>
             </div>
         </div>
     </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-
-    const DATA_COUNT = 7;
-    const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
-
-
-    const labels = {{data.labels|safe}}
-    const data = {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Showcase',
-          data: {{data.data|safe}},
-          borderColor: "rgb(54, 162, 235)",
-          backgroundColor: "rgb(54, 162, 235, 0.7)",
-        },
-        {
-          label: 'Normals',
-          data: {{data.normals|safe}},
-          borderColor: "rgb(255, 159, 64)",
-          backgroundColor: "rgb(255, 159, 64, 0.7)",
-        }
-      ]
-    };
-
-
-
-    const config = {
-      type: 'bar',
-      data: data,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Your blood results'
-          }
-        }
-      },
-    };
-
-
-  // === include 'setup' then 'config' above ===
-
-  var myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
-
-</script>
 {% endblock %}
