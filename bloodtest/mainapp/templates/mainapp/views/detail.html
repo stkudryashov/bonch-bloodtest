@@ -18,6 +18,7 @@
             <div class="card-body">
                 <p class="card-text mt-3" align="justify">
                     <div>
+                        <p>Ваша вероятность заболеть: {{ result }}</p>
                         {% for label, normal_min, normal_max, user_data, info_name, info_text in data %}
                             <canvas id="myChart{{ label }}"></canvas>
                             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -60,7 +61,7 @@
                             <p align="justify">{{ info_text }}</p>
                             <br>
                         {% endfor %}
-                        <p>{{ info }}</p>
+                        <p align="justify">{{ info }}</p>
                     </div>
                 </p>
             </div>

@@ -18,7 +18,7 @@
                     <h5 class="card-header">Результаты анализа от {{ result.datetime }}</h5>
                     <div class="card-body">
                         <p class="card-text mt-3" align="justify">
-                            Заключения по анализу "{{ result.name }}"
+                            {{ result.additional_info }}
                         </p>
                         <form method="post" action="/detail/">
                             {% csrf_token %}
